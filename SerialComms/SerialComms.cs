@@ -29,9 +29,8 @@ namespace SerialComms
         public int init()
         {
             int status = -1;
-            comPort = new SerialPort();
+            comPort = comPort = new SerialPort();
             comPort.DataReceived += new SerialDataReceivedEventHandler(dataReceived);
-            comPort.ErrorReceived += new SerialErrorReceivedEventHandler(errorReceived);
             return status;
         }
 
@@ -186,20 +185,10 @@ namespace SerialComms
         public int sendData(String data)
         {
             int status = -1;
-            //byte[] bytes = new byte[data.Length];
-            //for (int i = 0; i < data.Length; i++ )
-            //    bytes[i] = Convert.ToByte(data[i]);
-            //status = sendData(bytes);
-            try
-            {
-                comPort.Write(data);
-                status = 0;
-            }
-            catch (Exception e)
-            {
-                if (msg != null)
-                    msg(e.Message);
-            }
+            byte[] bytes = new byte[data.Length];
+            for (int i = 0; i < data.Length; i++ )
+                bytes[i] = Convert.ToByte(data[i]);
+            status = sendData(bytes);
             return status;
         }
 
@@ -212,14 +201,7 @@ namespace SerialComms
         {
             int status = -1;
             //send the message to the port
-            try
-            {
-                comPort.Write(data, 0, data.Length);
-                status = 0;
-            }
-            catch (Exception)
-            {
-            }
+            comPort.Write(data, 0, data.Length);
             return status;
         }
 
@@ -233,12 +215,6 @@ namespace SerialComms
 
             if (received != null)
                 received(comBuffer);
-        }
-
-        protected void errorReceived(object sender, SerialErrorReceivedEventArgs e)
-        {
-            if (msg != null)
-                msg(e.ToString());
         }
     }
 }
